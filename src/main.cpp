@@ -1,16 +1,38 @@
+#include "SignatureCaptureApplication.h"
+#include "InstanceGuard.h"
+
 #include <QGuiApplication>
-#include <QQmlApplicationEngine>
+#include <QDebug>
+
+namespace
+{
+    const QString APPLICATION_NAME = "SignatureCaptureApp";
+    const QString APPLICATION_VERSION = "1.0.0";
+}
 
 int main(int argc, char *argv[])
-{
+{   
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setOrganizationName("SumUp");
+    QCoreApplication::setOrganizationDomain("sumup.com");
+    QCoreApplication::setApplicationName(APPLICATION_NAME);
+    QCoreApplication::setApplicationVersion(APPLICATION_VERSION);
 
-    QGuiApplication app(argc, argv);
+    InstanceGuard guard(APPLICATION_NAME);
 
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/src/qml/main.qml")));
-    if (engine.rootObjects().isEmpty())
-        return -1;
+    if (!guard.tryRun()) {
+        qDebug() << "Cannot initialize " + APPLICATION_NAME + ": Another instance is running.";
+    }
+    else {
+        SignatureCaptureApplication app(argc, argv);
 
-    return app.exec();
+        if (!app.initialize()) {
+            qDebug() << "Cannot initialize " + APPLICATION_NAME + ": Initialization failed.";
+        }
+        else {
+            app.exec();
+        }
+    }
+
+    return 0;
 }

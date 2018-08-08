@@ -1,29 +1,64 @@
-QT += quick
-CONFIG += c++11
+QT += quick quickcontrols2
 
-# The following define makes your compiler emit warnings if you use
-# any feature of Qt which as been marked deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
+include(deployment.pri)
+
+# C++ Compiler
+CONFIG += c++11
+QMAKE_CXXFLAGS *= /std:c++17
+
 DEFINES += QT_DEPRECATED_WARNINGS
 
-# You can also make your code fail to compile if you use deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# Outputs
+BUILDPATH = $$PWD/builds
+
+win32:CONFIG(debug, debug|release) {
+    DESTPATH = $${BUILDPATH}/SignatureCaptureApp/debug
+    DESTDIR = $${DESTPATH}/bin
+    OBJECTS_DIR = $${DESTPATH}/.obj
+    MOC_DIR = $${DESTPATH}/.moc
+    RCC_DIR = $${DESTPATH}/.rcc
+    UI_DIR = $${DESTPATH}/.ui
+}
+
+win32:CONFIG(release, debug|release) {
+    DESTPATH = $${BUILDPATH}/SignatureCaptureApp/release
+    DESTDIR = $${DESTPATH}/bin
+    OBJECTS_DIR = $${DESTPATH}/.obj
+    MOC_DIR = $${DESTPATH}/.moc
+    RCC_DIR = $${DESTPATH}/.rcc
+    UI_DIR = $${DESTPATH}/.ui
+}
+
+# Qt version check
+SC_QT_VERSION = "5.10.0"
+if (!contains(QT_VERSION, $$SC_QT_VERSION)) {
+    message("Cannot build signature Capture App with Qt version $${QT_VERSION}.")
+    error("Use Qt " $$SC_QT_VERSION)
+}
+
+# Win Qt deployment variables
+win32 {
+    if (isEmpty($$TARGET_EXT)) {
+        TARGET_EXT = ".exe"
+    }
+
+    DEPLOY_COMMAND = windeployqt
+    DEPLOY_TARGET = $$shell_quote($$shell_path($${DESTDIR}/$${TARGET}$${TARGET_EXT}))
+    DEPLOY_QML_DIR = $$shell_path($$PWD/src/qml)
+}
+
+# Deploy Qt Dependencies
+win32 {
+    deployQtDependencies($${DEPLOY_QML_DIR}, $${DEPLOY_TARGET})
+}
 
 SOURCES += \
-        src/main.cpp
+        src/main.cpp \
+    src/InstanceGuard.cpp \
+    src/SignatureCaptureApplication.cpp
 
 RESOURCES += qml.qrc
 
-# Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
-
-# Additional import path used to resolve QML modules just for Qt Quick Designer
-QML_DESIGNER_IMPORT_PATH =
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+HEADERS += \
+    src/InstanceGuard.h \
+    src/SignatureCaptureApplication.h
