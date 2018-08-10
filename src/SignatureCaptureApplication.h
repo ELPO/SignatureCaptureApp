@@ -1,8 +1,11 @@
 #ifndef SIGNATURECAPTUREAPPLICATION_H
 #define SIGNATURECAPTUREAPPLICATION_H
 
+#include "QMLAdapter.h"
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QNetworkAccessManager>
 
 class SignatureCaptureApplication : public QGuiApplication
 {
@@ -15,6 +18,8 @@ public:
 
 private:
     QQmlApplicationEngine m_engine;
+    QScopedPointer<QMLAdapter> m_adapter;
+    QNetworkAccessManager *m_networkManager;
 
     Q_DISABLE_COPY(SignatureCaptureApplication)
 };

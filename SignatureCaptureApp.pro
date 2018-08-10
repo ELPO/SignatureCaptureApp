@@ -1,4 +1,4 @@
-QT += quick quickcontrols2
+QT += quick quickcontrols2 network
 
 include(deployment.pri)
 
@@ -53,12 +53,14 @@ win32 {
 }
 
 SOURCES += \
-        src/main.cpp \
+    src/main.cpp \
     src/InstanceGuard.cpp \
-    src/SignatureCaptureApplication.cpp
+    src/SignatureCaptureApplication.cpp \
+    src/QMLAdapter.cpp
 
 RESOURCES += qml.qrc
 
 HEADERS += \
     src/InstanceGuard.h \
-    src/SignatureCaptureApplication.h
+    src/SignatureCaptureApplication.h \
+    src/QMLAdapter.h
