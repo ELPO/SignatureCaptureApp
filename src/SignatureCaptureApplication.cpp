@@ -33,13 +33,22 @@ bool SignatureCaptureApplication::initialize()
         QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
         connect(mgr, &QNetworkAccessManager::finished, mgr, &QNetworkAccessManager::deleteLater);
         connect(mgr, &QNetworkAccessManager::finished, mgr, [](QNetworkReply *reply) {
-            QByteArray bts = reply->readAll();
-                QString str(bts);
+            if (reply->error() != 0) {// no error
+                qDebug() << "Request error: " << reply->errorString();
+            }
+            else {
+                QByteArray bts = reply->readAll();
+                    QString str(bts);
 
-                qDebug() << str;
+                    qDebug() << "answer!!! : " << str;
+            }
         });
 
-        mgr->post(QNetworkRequest(QUrl("https://httpbin.org/post")), data.toUtf8());
+        QNetworkRequest request(QUrl("https://httpbin.org/post"));
+        request.setHeader(QNetworkRequest::ContentTypeHeader,
+                          QStringLiteral("text/html; charset=utf-8"));
+
+        mgr->post(request, data.toUtf8());
 
     });
 

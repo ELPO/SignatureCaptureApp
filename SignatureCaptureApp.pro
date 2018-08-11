@@ -45,11 +45,15 @@ win32 {
     DEPLOY_COMMAND = windeployqt
     DEPLOY_TARGET = $$shell_quote($$shell_path($${DESTDIR}/$${TARGET}$${TARGET_EXT}))
     DEPLOY_QML_DIR = $$shell_path($$PWD/src/qml)
+    OPENSSL_LIBEAY = $$PWD/libs/openssl/bin/libeay32.dll
+    OPENSSL_SSLEAY = $$PWD/libs/openssl/bin/ssleay32.dll
 }
 
-# Deploy Qt Dependencies
+# Deploy Dependencies
 win32 {
     deployQtDependencies($${DEPLOY_QML_DIR}, $${DEPLOY_TARGET})
+    copyToBuildDir($$OPENSSL_LIBEAY)
+    copyToBuildDir($$OPENSSL_SSLEAY)
 }
 
 SOURCES += \
