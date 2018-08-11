@@ -8,6 +8,8 @@ QMAKE_CXXFLAGS *= /std:c++17
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+RC_ICONS = appIcon.ico
+
 # Outputs
 BUILDPATH = $$PWD/builds
 

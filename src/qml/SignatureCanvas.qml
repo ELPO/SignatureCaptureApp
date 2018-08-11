@@ -7,9 +7,9 @@ Canvas {
     property point endPoint: Qt.point(0, 0)
     property double startTimestamp: 0
     property double endTimestamp: 0
-    property int lineWidth: 4
+    property int lineWidth: 5
     property int widthMargin: width / 12.0
-    property bool clearing: true // so we paint the background detail the first time on Component creation
+    property bool clearing: true // We paint the background detail the first time on Component creation
 
     anchors.fill: parent
 
@@ -77,14 +77,14 @@ Canvas {
         var distance = Math.sqrt(a*a + b*b);
 
         if (distance < 2)
-            lineWidth = 5
+            lineWidth = 6
         else if (distance < 10)
-            lineWidth = 4
+            lineWidth = 5
         else if (distance < 25)
-            lineWidth = 3
+            lineWidth = 4
         else if (distance < 50)
-            lineWidth = 2
-        else lineWidth = 1
+            lineWidth = 3
+        else lineWidth = 2
     }
 
     function getDuration() {
@@ -93,6 +93,8 @@ Canvas {
 
     MouseArea {
         anchors.fill: parent
+
+        cursorShape: Qt.CrossCursor
 
         onMouseXChanged: {
             endPoint = Qt.point(mouseX, mouseY)
