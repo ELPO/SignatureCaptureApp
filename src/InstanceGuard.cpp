@@ -1,3 +1,8 @@
+/**
+ *  @brief Class that created a shared memory hash, detecting two
+ *  or more instances of the application.
+ */
+
 #include "InstanceGuard.h"
 
 #include <QCryptographicHash>

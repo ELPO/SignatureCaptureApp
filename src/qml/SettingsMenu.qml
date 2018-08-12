@@ -3,6 +3,8 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.2
 
+// Simple settings menu that allows the user to set some visual
+// and behavioural options. It reads and writes on the adapter properties
 Drawer {
     id: settingsMenu
 
@@ -145,6 +147,8 @@ Drawer {
                 to: 6
                 from: 4
 
+                value: 4
+
                 onValueChanged: {
                     adapter.lineWidth = value
                 }
@@ -160,29 +164,70 @@ Drawer {
         }
 
         RowLayout {
+
             Item {
                 width: appStyle.margin / 2
             }
 
             Text {
-                Layout.fillWidth: true
-                text: "Antialising"
+                text: "Pen Color"
 
                 font.family: appStyle.appFontFamily
                 font.pixelSize: 12
                 color: appStyle.headerColor
+                Layout.fillWidth: true
             }
 
-            Switch {
-                id: antialiasingSwitch
+            Column {
+                id: colorButtons
 
-                Material.accent: appStyle.headerColor
+                RadioButton {
+                    id: blackRb
 
-                checked: true
+                    text: "Black"
 
-                onCheckedChanged: {
-                    appData.usingAntialising = checked
+                    checked: true
+
+                    Material.accent: appStyle.headerColor
+
+                    onCheckedChanged: {
+                        if (checked) {
+                            appStyle.penColor = "black"
+                        }
+                    }
                 }
+
+                RadioButton {
+                    id: redRb
+
+                    text: "Red"
+
+                    Material.accent: appStyle.headerColor
+
+                    onCheckedChanged: {
+                        if (checked) {
+                            appStyle.penColor = "red"
+                        }
+                    }
+                }
+
+                RadioButton {
+                    id: blueRb
+
+                    text: "Blue"
+
+                    Material.accent: appStyle.headerColor
+
+                    onCheckedChanged: {
+                        if (checked) {
+                            appStyle.penColor = "blue"
+                        }
+                    }
+                }
+            }
+
+            Item {
+                width: appStyle.margin
             }
         }
 
