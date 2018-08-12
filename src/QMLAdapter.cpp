@@ -1,3 +1,8 @@
+/**
+ *  @brief Class that acts as a bridge between the QML UI and the C++
+ *  backend.
+ */
+
 #include "QMLAdapter.h"
 
 #include <QJsonObject>
@@ -15,7 +20,6 @@ QMLAdapter::QMLAdapter(QObject *parent)
     , m_infoText("Please sign here")
     , m_postUrl(POST_URL)
     , m_outputLocal(false)
-    , m_antialising(true)
     , m_lineWidth(4)
 {   
 
@@ -54,17 +58,6 @@ void QMLAdapter::setOutputLocal(bool isOutPutLocal)
     emit outputLocalChanged(isOutPutLocal);
 }
 
-bool QMLAdapter::antialising() const
-{
-    return m_antialising;
-}
-
-void QMLAdapter::setAntialising(bool antialising)
-{
-    m_antialising = antialising;
-    emit antialisingChanged(antialising);
-}
-
 int QMLAdapter::lineWidth() const
 {
     return m_lineWidth;
@@ -76,6 +69,7 @@ void QMLAdapter::setLineWidth(int lineWidth)
     emit lineWidthChanged(lineWidth);
 }
 
+// Function that simulates the payment.
 void QMLAdapter::pay(const QList<int> &gesture, int attempts, int duration)
 {
     QString data = toJson(gesture, attempts, duration);
@@ -97,16 +91,16 @@ void QMLAdapter::pay(const QList<int> &gesture, int attempts, int duration)
 
         QNetworkAccessManager *nam = new QNetworkAccessManager(this);
         connect(nam, &QNetworkAccessManager::finished, nam, &QNetworkAccessManager::deleteLater);
-        connect(nam, &QNetworkAccessManager::finished, nam, [&](QNetworkReply *reply)
+        connect(nam, &QNetworkAccessManager::finished, nam, [&](QNetworkReply *reply) // lambda that gets executed when the request finish
         {
-            if (reply->error() != 0) {// error
+            if (reply->error() != 0) { // error
                 qDebug() << "Request error: " << reply->errorString();
                 setInfoText("Error: " + reply->errorString());
             }
             else {
                 QByteArray bts = reply->readAll();
                 QString str(bts);
-                qDebug() << str;
+                qDebug() << str; // logging the request reply
                 setInfoText("Success!");
             }
 
@@ -126,16 +120,17 @@ void QMLAdapter::pay(const QList<int> &gesture, int attempts, int duration)
     }
 }
 
+// We transform the signature into JSON data
 QString QMLAdapter::toJson(const QList<int> &gesture, int attempts, int duration) const
 {
     QJsonObject jsonSignature, jsonObj;
-    QJsonArray coors;
+    QJsonArray coords;
     foreach (int coor, gesture) {
-        coors.append(coor);
+        coords.append(coor);
     }
 
-    jsonSignature["gesture"] = coors;
-    jsonSignature["stroke_width"] = 4;
+    jsonSignature["gesture"] = coords;
+    jsonSignature["stroke_width"] = m_lineWidth;
     jsonSignature["time"] = duration;
     jsonSignature["tries"] = attempts;
     jsonSignature["version"] = 2; // hardcoded

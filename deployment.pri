@@ -1,4 +1,4 @@
-#Common methods for deployment
+# Common methods for deployment
 
 # Dependencies
 # Function to copy specified files to build directory
@@ -26,7 +26,7 @@ defineTest(deployQtDependencies) {
     export(QMAKE_POST_LINK)
 }
 
-# Function to call CMake and copy the DLLs from the binary path using BundleUtilities
+# Function to call CMake and copy the DLLs from the binary path
 defineTest(deployDLLDependencies) {
     target_file = $$1
     binary_path = $$2

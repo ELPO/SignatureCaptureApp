@@ -7,11 +7,11 @@ class QMLAdapter : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString infoText READ infoText WRITE setInfoText NOTIFY infoTextChanged)
-    Q_PROPERTY(QString postUrl READ postUrl WRITE setPostUrl NOTIFY postUrlChanged)
-    Q_PROPERTY(bool outputLocal READ outputLocal WRITE setOutputLocal NOTIFY outputLocalChanged)
-    Q_PROPERTY(bool antialising READ antialising WRITE setAntialising NOTIFY antialisingChanged)
-    Q_PROPERTY(int lineWidth READ lineWidth WRITE setLineWidth NOTIFY lineWidthChanged)
+    // QML-C++ properties
+    Q_PROPERTY(QString infoText READ infoText WRITE setInfoText NOTIFY infoTextChanged) //text of the header of the app
+    Q_PROPERTY(QString postUrl READ postUrl WRITE setPostUrl NOTIFY postUrlChanged) // output method in settings menu
+    Q_PROPERTY(bool outputLocal READ outputLocal WRITE setOutputLocal NOTIFY outputLocalChanged) // post url in settings menu
+    Q_PROPERTY(int lineWidth READ lineWidth WRITE setLineWidth NOTIFY lineWidthChanged) // signature width in settings menu
 
 public:
     QMLAdapter(QObject *parent = Q_NULLPTR);
@@ -25,9 +25,6 @@ public:
     bool outputLocal() const;
     void setOutputLocal(bool isOutPutLocal);
 
-    bool antialising() const;
-    void setAntialising(bool antialising);
-
     int lineWidth() const;
     void setLineWidth(int lineWidth);
 
@@ -39,7 +36,6 @@ signals:
     void infoTextChanged(const QString &newText);
     void postUrlChanged(const QString &postUrl);
     void outputLocalChanged(bool isOutputLocal);
-    void antialisingChanged(bool antialising);
     void lineWidthChanged(int lineWidth);
 
     void dataReadyToExport(const QString &data);
@@ -51,7 +47,6 @@ private:
     QString m_postUrl;
 
     bool m_outputLocal;
-    bool m_antialising;
 
     int m_lineWidth;
 

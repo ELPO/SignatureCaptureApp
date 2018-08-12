@@ -21,15 +21,17 @@ Window {
     title: qsTr("Signature Capture")
 
     Component.onCompleted: {
-        adapter.requestCompleted.connect(requestEnded)
+        adapter.requestCompleted.connect(requestEnded) // When the request ends we reenable the UI
     }
 
+    // App general style properties
     QtObject {
         id: appStyle
 
         readonly property color backgroundColor: "#F1F2F4"
         readonly property color headerColor: "#3e5e6d"
         readonly property color textColor: "white"
+        property color penColor: "black"
 
         readonly property string appFontFamily: "Montserrat"
         readonly property int appFontSize: 16
@@ -38,38 +40,67 @@ Window {
         readonly property int margin: appWindow.width / 11.0 //assuming squared window
     }
 
+    // App Data in the QML side
     QtObject {
         id: appData
 
-        property var gesture: []
-        property int attempts: 0
-        property int duration: 0
-        property bool usingAntialising: true
+        // signature coordinates in [[x1,y1,x2,y2...][xn,yn,xn+1,xn+2...]...] format.
+        // Each subarray contains the data of a single stroke
+        property var gesture: [[]]
+        property int attempts: 0 // number of 'clears' per signature
+        property int duration: 0 // time between the first point and the payment
     }
 
+    // We block the UI operations when the signature is being sent
     function launchRequest() {
         busyIndicator.visible = true
         clearBtn.enabled = false
         payBtn.enabled = false
         signature.enabled = false
-        adapter.pay(appData.gesture, appData.attempts, signature.getDuration())
+
+        var plainGestureCoords = []
+
+        for (var numStrokes = 0; numStrokes < appData.gesture.length; numStrokes++) {
+            for (var i = 0; i < appData.gesture[numStrokes].length; i++) {
+                plainGestureCoords.push(appData.gesture[numStrokes][i])
+            }
+        }
+
+        adapter.pay(plainGestureCoords, appData.attempts, signature.getDuration())
     }
 
+    // We reenable the UI when the request ends
     function requestEnded() {
         busyIndicator.visible = false
         signature.clear()
         signature.enabled = true
-        appData.gesture = []
+        appData.gesture = [[]]
         appData.attempts = 0
         clearBtn.enabled = true
         payBtn.enabled = true
     }
 
+    // Lateral Settings Menu
     SettingsMenu {
         id: settingsMenu
 
+        property int storedWidth: 0
+        property color storedColor: "black"
+
         width: 0.66 * appWindow.width
         height: appWindow.height
+
+        onOpened: {
+            storedColor = appStyle.penColor
+            storedWidth = adapter.lineWidth
+        }
+
+        // If we have changed any pen options we need to repaint the signature
+        onClosed: {
+            if (storedWidth !== adapter.lineWidth ||
+                storedColor !== appStyle.penColor)
+                signature.updatePen()
+        }
     }
 
     Rectangle {
@@ -84,6 +115,7 @@ Window {
 
             spacing: 0
 
+            // Application header
             Pane {
                 id: appHeader
 
@@ -182,7 +214,7 @@ Window {
 
                     onClicked: {
                         signature.clear()
-                        appData.gesture = []
+                        appData.gesture = [[]]
                         appData.attempts++
                     }
                 }
@@ -202,12 +234,6 @@ Window {
 
                     onClicked: {
                         launchRequest()
-
-                        //adapter.pay(appData.gesture, appData.attempts, signature.getDuration())
-
-//                        signature.clear()
-//                        appData.gesture = []
-//                        appData.attempts = 0
                     }
                 }
 
