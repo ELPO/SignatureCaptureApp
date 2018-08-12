@@ -46,7 +46,7 @@ Window {
 
         // signature coordinates in [[x1,y1,x2,y2...][xn,yn,xn+1,xn+2...]...] format.
         // Each subarray contains the data of a single stroke
-        property var gesture: [[]]
+        property var gesture: []
         property int attempts: 0 // number of 'clears' per signature
         property int duration: 0 // time between the first point and the payment
     }
@@ -74,7 +74,7 @@ Window {
         busyIndicator.visible = false
         signature.clear()
         signature.enabled = true
-        appData.gesture = [[]]
+        appData.gesture = []
         appData.attempts = 0
         clearBtn.enabled = true
         payBtn.enabled = true
@@ -214,7 +214,7 @@ Window {
 
                     onClicked: {
                         signature.clear()
-                        appData.gesture = [[]]
+                        appData.gesture = []
                         appData.attempts++
                     }
                 }

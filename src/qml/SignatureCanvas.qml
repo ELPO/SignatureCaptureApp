@@ -91,12 +91,15 @@ Canvas {
             return
         }
 
+        if (appData.gesture.length === 0) {
+            clear()
+        }
+
         // If we are drawing we just paint the new segment
         ctx.lineWidth = lineWidth
         ctx.lineCap = "round"
         ctx.lineJoin = "round"
         ctx.strokeStyle = appStyle.penColor
-        ctx.fillStyle = appStyle.penColor
 
         ctx.beginPath()
         ctx.moveTo(startPoint.x, startPoint.y)
