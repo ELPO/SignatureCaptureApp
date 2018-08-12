@@ -2,6 +2,8 @@
 
 Project Requires Qt 5.10.0 and MSVC2017 64B with Windows as OS (developed and tested in Windows 10 64B). 
 
+Best way to build is just to clone the repository, then opening the .pro file with Qt selecting a 5.10.0 kit and then run qmake + build.
+
 QMake should generate a fully functional build (I made It to automatically call windeployqt and copy the openssl dlls) in the SignatureCaptureApp\builds\SignatureCaptureApp\release(or debug)\bin directory.
 
 The app should met the requeriments, including the optional goals (variable width based on speed and POST request) aswell.
